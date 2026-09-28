@@ -65,7 +65,7 @@
   --ink-hover:#3D332E;
   --soft:#F1DCCB;            /* подложки иконок и плашек */
   --line:#E4D8C8;            /* разделители */
-  --field:#BFAE9B;           /* рамки полей */
+  --field:#958371;           /* рамки полей (контраст ≥3:1 к белому) */
   --white:#FFFFFF;
   --photo:#E2CCB2;           /* цвет-заглушка, пока грузится фото */
 
@@ -96,7 +96,7 @@
 
 /* ===== 2. Базовые стили ===== */
 *{box-sizing:border-box}
-html{scroll-behavior:smooth}
+html{scroll-behavior:smooth;scrollbar-gutter:stable}   /* страница не «прыгает», когда открыто окно */
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
 html.lock{overflow:hidden}                   /* фон не прокручивается под открытым окном */
 body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font-sans)}
@@ -104,6 +104,7 @@ a{color:var(--ink)}
 a:hover{color:var(--accent)}
 input,textarea,button{font-family:inherit}
 :focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.sec--dark :focus-visible{outline-color:var(--soft)}   /* на тёмном фоне терракотовая рамка почти не видна */
 [hidden]{display:none !important}
 .serif{font-family:var(--font-serif)}
 .it{font-style:italic;font-weight:600;color:var(--accent)}  /* курсивный акцент в заголовках */
@@ -203,12 +204,18 @@ input,textarea,button{font-family:inherit}
   .logo-t{font-size:21px}
 }
 @media (max-width:400px){
-  .hdr{padding:12px 16px}
+  .hdr{padding:12px 16px;gap:8px}
+  .mainnav{gap:8px}
   .logo-t{font-size:19px}
   .logo svg{width:24px;height:24px}
   .btn-hdr{font-size:14px;padding:11px 15px}
   .burger{width:42px;height:42px}
   .navlinks{padding:4px 16px 12px}
+}
+@media (max-width:340px){
+  .logo{gap:6px}
+  .logo-t{font-size:17px}
+  .btn-hdr{padding:10px 12px}
 }
 
 
@@ -353,6 +360,9 @@ input,textarea,button{font-family:inherit}
 .field input,.field textarea{padding:0 16px;height:52px;border-radius:14px;border:1.5px solid var(--field);background:var(--white);font-size:16px;color:var(--ink)}
 .field textarea{height:auto;padding:14px 16px;resize:vertical}
 .hint{font-size:13px;color:var(--caption)}
+.hint--err{color:var(--accent);font-weight:700}
+.req{color:var(--accent)}
+.form-note{margin:0;font-size:13px;color:var(--caption)}
 .pills{display:flex;flex-wrap:wrap;gap:10px}
 
 /* Согласие */
@@ -430,8 +440,10 @@ input,textarea,button{font-family:inherit}
 /* ===== 17. Окна с документами ===== */
 dialog{border:none;padding:0;background:transparent;max-width:760px;width:calc(100% - 40px)}
 dialog::backdrop{background:rgba(42,35,32,.6)}
-.mcard{background:var(--surface);color:var(--ink);max-height:86vh;overflow:auto;border-radius:24px;padding:36px;display:flex;flex-direction:column;gap:14px;font-size:15px;line-height:1.6}
-.mhead{display:flex;justify-content:space-between;align-items:flex-start;gap:16px}
+.mcard{background:var(--surface);color:var(--ink);max-height:86vh;max-height:86dvh;overflow:hidden;border-radius:24px;display:flex;flex-direction:column;font-size:15px;line-height:1.6}
+/* Шапка окна с крестиком всегда видна, прокручивается только текст */
+.mhead{flex-shrink:0;display:flex;justify-content:space-between;align-items:flex-start;gap:16px;padding:36px 36px 16px;border-bottom:1px solid var(--line)}
+.mbody{overflow:auto;overscroll-behavior:contain;padding:16px 36px 36px;display:flex;flex-direction:column;gap:14px}
 .mcard h2{margin:0;font-size:28px;line-height:1.2}
 .mcard h3{margin:8px 0 0;font-size:17px}
 .mcard p{margin:0}
@@ -439,9 +451,21 @@ dialog::backdrop{background:rgba(42,35,32,.6)}
 .x{flex-shrink:0;width:44px;height:44px;border-radius:999px;border:1.5px solid var(--field);background:var(--white);color:var(--ink);font-size:22px;line-height:1;cursor:pointer}
 
 @media (max-width:820px){
-  .mcard{padding:22px}
+  .mhead{padding:20px 20px 14px}
+  .mbody{padding:14px 20px 24px}
+  .mcard h2{font-size:22px}
 }
 </style>
+<!-- Без JavaScript бургер не работает — показываем ссылки меню второй строкой -->
+<noscript><style>
+@media (max-width:1100px){
+  .burger{display:none !important}
+  .hdr{flex-wrap:wrap;row-gap:10px}
+  .mainnav{display:contents}
+  .navlinks{display:flex;order:3;flex-basis:100%;position:static;flex-direction:row;flex-wrap:wrap;gap:6px 18px;padding:0;background:none;border:0;box-shadow:none}
+  .navlinks a{padding:4px 0;border:0;font-size:15px}
+}
+</style></noscript>
 </head>
 <body>
 
@@ -700,23 +724,25 @@ dialog::backdrop{background:rgba(42,35,32,.6)}
       <p class="nojs">Форма заявки работает только с включённым JavaScript. Позвоните нам: <a href="tel:+79855388999">+7 985 538 8999</a> или напишите в Telegram: <a href="https://t.me/petovik" target="_blank" rel="noopener">@petovik</a>.</p>
     </noscript>
 
-    <form id="bookingForm" class="form" method="post" action="#booking">
+    <!-- novalidate: проверку делает скрипт (onSubmit), чтобы сообщения были одинаковыми во всех браузерах -->
+    <form id="bookingForm" class="form" method="post" action="#booking" novalidate>
       <input type="hidden" name="format" id="formatInput" value="Студия">
       <!-- Ловушка для спам-ботов: люди это поле не видят -->
       <p hidden><label>Не заполняйте это поле: <input name="website" tabindex="-1" autocomplete="off"></label></p>
+      <p class="form-note"><span class="req" aria-hidden="true">*</span> — обязательные поля</p>
 
       <div class="field">
-        <label for="f-name">Ваше имя</label>
-        <input id="f-name" name="name" type="text" autocomplete="name" placeholder="Как к вам обращаться" required>
+        <label for="f-name">Ваше имя <span class="req" aria-hidden="true">*</span></label>
+        <input id="f-name" name="name" type="text" autocomplete="name" placeholder="Как к вам обращаться" maxlength="60" required>
       </div>
       <div class="field">
-        <label for="f-phone">Телефон</label>
+        <label for="f-phone">Телефон <span class="req" aria-hidden="true">*</span></label>
         <input id="f-phone" name="phone" type="tel" autocomplete="tel" placeholder="+7 900 000-00-00" maxlength="25" aria-describedby="phone-hint" required>
-        <span class="hint" id="phone-hint">Только цифры, пробелы, +, скобки и дефис</span>
+        <span class="hint" id="phone-hint" aria-live="polite">Только цифры, пробелы, +, скобки и дефис</span>
       </div>
       <div class="field">
         <label for="f-dog">Кличка и порода</label>
-        <input id="f-dog" name="dog" type="text" placeholder="Например: Буся, корги">
+        <input id="f-dog" name="dog" type="text" placeholder="Например: Буся, корги" maxlength="80">
       </div>
       <div class="field">
         <div class="flabel" id="fmt-label">Формат</div>
@@ -732,13 +758,14 @@ dialog::backdrop{background:rgba(42,35,32,.6)}
       </div>
       <div class="field">
         <label for="f-note">О собаке</label>
-        <textarea id="f-note" name="note" rows="3" placeholder="Характер, особенности, пожелания к съёмке"></textarea>
+        <textarea id="f-note" name="note" rows="3" placeholder="Характер, особенности, пожелания к съёмке" maxlength="1000" aria-describedby="note-hint"></textarea>
+        <span class="hint" id="note-hint">До 1000 символов</span>
       </div>
 
       <div class="agree">
-        <input id="f-agree" name="agree" value="да" type="checkbox">
+        <input id="f-agree" name="agree" value="да" type="checkbox" required>
         <div class="agree-text">
-          <label for="f-agree">Я даю согласие на обработку персональных данных и принимаю условия документов:</label>
+          <label for="f-agree"><span class="req" aria-hidden="true">*</span> Я даю согласие на обработку персональных данных и принимаю условия документов:</label>
           <button type="button" class="linkbtn" data-open="privacy">согласие на обработку данных</button> и
           <button type="button" class="linkbtn" data-open="terms">пользовательское соглашение</button>.
         </div>
@@ -808,6 +835,7 @@ dialog::backdrop{background:rgba(42,35,32,.6)}
       <h2 id="terms-title" class="serif">Пользовательское (лицензионное) соглашение</h2>
       <button type="button" class="x" data-close aria-label="Закрыть">×</button>
     </div>
+    <div class="mbody" tabindex="0">
     <div class="medition">Редакция от 29 сентября 2026 года</div>
     <h3>1. Общие положения</h3>
     <p>1.1. Настоящее соглашение регулирует отношения между владельцем сайта kksenphoto (далее — Фотограф) и любым лицом, использующим сайт (далее — Пользователь).</p>
@@ -829,6 +857,7 @@ dialog::backdrop{background:rgba(42,35,32,.6)}
     <h3>6. Заключительные положения</h3>
     <p>6.1. Фотограф вправе изменять условия соглашения. Новая редакция действует с момента её размещения на сайте.</p>
     <p>6.2. К соглашению применяется законодательство Российской Федерации. Вопросы по соглашению можно направить на petyapoplevin@gmail.com.</p>
+    </div>
   </div>
 </dialog>
 
@@ -838,6 +867,7 @@ dialog::backdrop{background:rgba(42,35,32,.6)}
       <h2 id="privacy-title" class="serif">Согласие на обработку персональных данных</h2>
       <button type="button" class="x" data-close aria-label="Закрыть">×</button>
     </div>
+    <div class="mbody" tabindex="0">
     <div class="medition">Редакция от 29 сентября 2026 года</div>
     <p>Отправляя заявку на сайте kksenphoto, я свободно, своей волей и в своём интересе даю согласие оператору — [ФИО владельца или название ИП/организации, ИНН], адрес: г. Москва, Мичуринский проспект, д. 42, e-mail: petyapoplevin@gmail.com (далее — Оператор) — на обработку моих персональных данных в соответствии с Федеральным законом от 27.07.2006 № 152-ФЗ «О персональных данных» на следующих условиях.</p>
     <h3>1. Какие данные обрабатываются</h3>
@@ -852,6 +882,7 @@ dialog::backdrop{background:rgba(42,35,32,.6)}
     <p>Я могу отозвать согласие, направив письмо на petyapoplevin@gmail.com. В этом случае Оператор прекращает обработку и уничтожает данные в течение 30 дней, если иное не предусмотрено законом.</p>
     <h3>6. Мои права</h3>
     <p>Я вправе получать сведения об обработке своих данных, требовать их уточнения, блокирования или уничтожения, если они неполные, устаревшие или обрабатываются незаконно (статья 14 Закона № 152-ФЗ).</p>
+    </div>
   </div>
 </dialog>
 
@@ -926,6 +957,11 @@ var PHONE_TEXT = '+7 985 538 8999';
      3. Проверка полей
      =================================================================== */
   var phone = document.getElementById('f-phone');
+  var phoneHint = document.getElementById('phone-hint');
+  var PHONE_HINT = phoneHint.textContent;
+  var phoneTouched = false;   // ошибку показываем, только когда человек закончил ввод
+  var nameInput = document.getElementById('f-name');
+  var agree = document.getElementById('f-agree');
   var dateInput = document.getElementById('f-date');
 
   // Дата в формате ГГГГ-ММ-ДД по местному времени
@@ -951,7 +987,25 @@ var PHONE_TEXT = '+7 985 538 8999';
     if (digits < 10 || digits > 15) return 'Проверьте номер: в нём должно быть от 10 до 15 цифр.';
     return '';
   }
-  function checkPhone() { phone.setCustomValidity(phoneError(phone.value)); }
+  // Ошибка телефона выводится текстом под полем — без всплывашек и без возврата фокуса
+  function checkPhone() {
+    var err = phoneError(phone.value);
+    phone.setCustomValidity(err);
+    var show = phoneTouched && !!err;
+    phoneHint.textContent = show ? err : PHONE_HINT;
+    phoneHint.classList.toggle('hint--err', show);
+    if (show) phone.setAttribute('aria-invalid', 'true');
+    else phone.removeAttribute('aria-invalid');
+  }
+
+  // Имя из одних пробелов не считается заполненным
+  function checkName() {
+    nameInput.setCustomValidity(nameInput.value.trim() ? '' : 'Укажите, как к вам обращаться.');
+  }
+
+  function checkAgree() {
+    agree.setCustomValidity(agree.checked ? '' : 'Отметьте согласие, чтобы отправить заявку.');
+  }
 
   function checkDate() {
     var past = dateInput.value && dateInput.value < dateInput.min;
@@ -962,9 +1016,11 @@ var PHONE_TEXT = '+7 985 538 8999';
     setDateLimits();
     phone.addEventListener('input', checkPhone);
     phone.addEventListener('blur', function () {
+      if (phone.value.trim()) phoneTouched = true;
       checkPhone();
-      if (phone.value.trim()) phone.reportValidity();
     });
+    nameInput.addEventListener('input', checkName);
+    agree.addEventListener('change', checkAgree);
     dateInput.addEventListener('input', function () { dateInput.setCustomValidity(''); });
   }
 
@@ -1009,14 +1065,15 @@ var PHONE_TEXT = '+7 985 538 8999';
 
   function collectPayload() {
     var fd = new FormData(form);
+    function val(k) { return String(fd.get(k) || '').trim(); }
     return {
-      name: fd.get('name') || '',
-      phone: fd.get('phone') || '',
-      dog: fd.get('dog') || '',
-      format: fd.get('format') || '',
-      date: fd.get('date') || '',
-      note: fd.get('note') || '',
-      website: fd.get('website') || '',   // ловушка для ботов
+      name: val('name'),
+      phone: val('phone'),
+      dog: val('dog'),
+      format: val('format'),
+      date: val('date'),
+      note: val('note'),
+      website: val('website'),   // ловушка для ботов
       agree: true
     };
   }
@@ -1040,7 +1097,10 @@ var PHONE_TEXT = '+7 985 538 8999';
     form.reset();
     setFormat('studio');
     setDateLimits();
-    phone.setCustomValidity('');
+    phoneTouched = false;
+    checkPhone();
+    nameInput.setCustomValidity('');
+    agree.setCustomValidity('');
     thanks.hidden = true;
     form.hidden = false;
     document.getElementById('f-name').focus();
@@ -1050,13 +1110,13 @@ var PHONE_TEXT = '+7 985 538 8999';
     e.preventDefault();
     msg.hidden = true;
 
+    phoneTouched = true;
+    checkName();
     checkPhone();
     checkDate();
+    checkAgree();
+    // Браузер сам переведёт фокус на первое незаполненное поле (включая галочку согласия)
     if (!form.checkValidity()) { form.reportValidity(); return; }
-    if (!document.getElementById('f-agree').checked) {
-      showMsg('Отметьте согласие, чтобы отправить заявку.');
-      return;
-    }
     if (!WORKER_URL) {
       showMsg('Приём заявок ещё не настроен. Позвоните нам: ' + PHONE_TEXT + '.');
       return;
@@ -1102,7 +1162,14 @@ var PHONE_TEXT = '+7 985 538 8999';
         else { d.removeAttribute('open'); root.classList.remove('lock'); }
       }
       d.addEventListener('close', function () { root.classList.remove('lock'); });   // в т.ч. по Esc
-      d.addEventListener('click', function (e) { if (e.target === d) closeDialog(); }); // клик по затемнению
+      // Закрываем по клику на затемнение, но только если и нажали, и отпустили на нём:
+      // иначе окно закрывалось бы при выделении текста мышью
+      var downOnBackdrop = false;
+      d.addEventListener('mousedown', function (e) { downOnBackdrop = e.target === d; });
+      d.addEventListener('click', function (e) {
+        if (e.target === d && downOnBackdrop) closeDialog();
+        downOnBackdrop = false;
+      });
       d.querySelectorAll('[data-close]').forEach(function (x) { x.addEventListener('click', closeDialog); });
     });
   }
