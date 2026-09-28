@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>kksenphoto — фотосессии для собак в Москве</title>
 <meta name="description" content="Студийные и выездные фотосессии для собак в Москве. 25 обработанных фото за 2 дня. Мичуринский проспект, 42.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%90%BE%3C/text%3E%3C/svg%3E">
@@ -86,6 +86,19 @@ dialog::backdrop{background:rgba(42,35,32,.6)}
 .x{flex-shrink:0;width:44px;height:44px;border-radius:999px;border:1.5px solid var(--field);background:#FFFFFF;color:var(--ink);font-size:22px;line-height:1;cursor:pointer}
 footer .flink{padding:0;border:none;background:none;color:#D9CCBD;font-size:14px;text-decoration:underline;cursor:pointer}
 footer a{color:#D9CCBD;text-decoration:none}footer a:hover{color:#FFFFFF}
+.foot{padding-top:64px;padding-bottom:104px}
+.soc{color:inherit;text-decoration:underline;text-underline-offset:3px}
+.faq{max-width:860px;width:100%;display:flex;flex-direction:column;border-top:1px solid var(--line)}
+.faq details{border-bottom:1px solid var(--line)}
+.faq summary{list-style:none;cursor:pointer;padding:22px 52px 22px 0;font-size:19px;font-weight:700;line-height:1.35;position:relative}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:'+';position:absolute;right:6px;top:50%;transform:translateY(-50%);font-size:30px;font-weight:400;line-height:1;color:var(--accent)}
+.faq details[open] summary::after{content:'−'}
+.faq details p{margin:0 0 22px;font-size:16px;line-height:1.65;color:var(--muted);max-width:720px}
+.cbar{position:fixed;right:24px;bottom:24px;z-index:40;display:flex;gap:10px}
+.cb{display:flex;align-items:center;justify-content:center;gap:8px;height:52px;padding:0 22px;border-radius:999px;font-size:15px;font-weight:700;text-decoration:none;box-shadow:0 6px 20px rgba(42,35,32,.2)}
+.cb-call{background:var(--ink);color:#FFFDF9}.cb-call:hover{color:#FFFDF9;background:#3D332E}
+.cb-write{background:var(--accent);color:#FFFDF9}.cb-write:hover{color:#FFFDF9;filter:brightness(1.08)}
 @media (max-width:1100px){
 .hero-media{width:440px;height:480px}
 .g4{grid-template-columns:repeat(2,minmax(0,1fr))}
@@ -113,6 +126,11 @@ footer a{color:#D9CCBD;text-decoration:none}footer a:hover{color:#FFFFFF}
 .fcols{flex-direction:column}
 .fgroups{flex-direction:column;gap:20px}
 .mcard{padding:22px}
+body{padding-bottom:calc(76px + env(safe-area-inset-bottom))}
+.foot{padding-top:48px;padding-bottom:40px}
+.cbar{left:0;right:0;bottom:0;gap:10px;padding:10px 12px calc(10px + env(safe-area-inset-bottom));background:rgba(246,240,230,.96);border-top:1px solid var(--line)}
+.cb{flex:1 1 0;box-shadow:none}
+.faq summary{font-size:17px;padding:18px 44px 18px 0}
 }
 </style>
 </head>
@@ -127,6 +145,7 @@ footer a{color:#D9CCBD;text-decoration:none}footer a:hover{color:#FFFFFF}
 <a class="navlink" href="#services" style="text-decoration:none">Форматы</a>
 <a class="navlink" href="#portfolio" style="text-decoration:none">Портфолио</a>
 <a class="navlink" href="#steps" style="text-decoration:none">Как проходит</a>
+<a class="navlink" href="#faq" style="text-decoration:none">Вопросы</a>
 <a class="navlink" href="#contacts" style="text-decoration:none">Контакты</a>
 <a class="btn btn-main" href="#booking" style="font-size:15px;padding:13px 22px">Записаться</a>
 </nav>
@@ -205,7 +224,7 @@ footer a{color:#D9CCBD;text-decoration:none}footer a:hover{color:#FFFFFF}
 <h2 class="h2 serif">Портфолио</h2>
 <p style="margin:0;font-size:18px;color:var(--muted)">Немного наших любимых моделей — с хвостами и без.</p>
 </div>
-<div style="font-weight:700;font-size:16px">Больше работ — @petovik</div>
+<div style="font-weight:700;font-size:16px">Больше работ — <a class="soc" href="https://t.me/petovik" target="_blank" rel="noopener">@petovik</a></div>
 </div>
 <div class="gp">
 <div class="ph pimg i-corgi" role="img" aria-label="Корги прикрывает глаза лапками" style="background-position:center 40%"></div>
@@ -224,6 +243,19 @@ footer a{color:#D9CCBD;text-decoration:none}footer a:hover{color:#FFFFFF}
 <div class="step"><div class="num">2</div><h3>Подготовка</h3><p>Подскажем, что взять: любимую игрушку, лакомства, поводок и хорошее настроение.</p></div>
 <div class="step"><div class="num">3</div><h3>Съёмка</h3><p>Без спешки: игры, перерывы, много похвалы. Собака задаёт темп.</p></div>
 <div class="step"><div class="num">4</div><h3>Готовые фото</h3><p>Через 2 дня присылаем 25 обработанных фото по ссылке.</p></div>
+</div>
+</section>
+
+<section id="faq" class="sec" style="background:var(--surface);display:flex;flex-direction:column;align-items:center;gap:36px">
+<h2 class="h2 serif" style="text-align:center">Частые вопросы</h2>
+<div class="faq">
+<details><summary>Моя собака пугливая или очень активная — получится ли съёмка?</summary><p>Да. В начале даём собаке освоиться и познакомиться с фотографом, снимаем без спешки и делаем перерывы. Расскажите о характере в заявке — подготовимся заранее.</p></details>
+<details><summary>Сколько длится фотосессия?</summary><p>Обычно около часа. Темп задаёт собака: если нужен отдых, делаем паузу и продолжаем, когда она снова готова.</p></details>
+<details><summary>Что взять с собой?</summary><p>Любимую игрушку, лакомства, поводок, воду и миску. Для студии пригодится расчёска, для прогулки — полотенце на случай грязных лап.</p></details>
+<details><summary>Можно прийти с несколькими собаками или всей семьёй?</summary><p>Да. Для съёмки с хозяевами есть формат «Вместе с хозяином». Если собак несколько, напишите об этом в заявке — стоимость уточним при записи.</p></details>
+<details><summary>Где проходит выездная съёмка?</summary><p>В любом удобном месте в Москве: парк, двор, ваш дом или любимая поляна. Подскажем красивые локации, если не знаете, где снимать.</p></details>
+<details><summary>Когда и как я получу фотографии?</summary><p>Через 2 дня пришлём 25 обработанных фото по ссылке — их можно скачать в полном размере.</p></details>
+<details><summary>Как оплатить и можно ли перенести съёмку?</summary><p>Условия оплаты согласуем при записи. Если вы или собака приболели, просто предупредите заранее — подберём новую дату.</p></details>
 </div>
 </section>
 
@@ -270,7 +302,7 @@ footer a{color:#D9CCBD;text-decoration:none}footer a:hover{color:#FFFFFF}
 </section>
 </main>
 
-<footer id="contacts" class="sec" style="background:var(--ink);color:#F6F0E6;padding-top:64px;padding-bottom:48px;display:flex;flex-direction:column;gap:40px">
+<footer id="contacts" class="sec foot" style="background:var(--ink);color:#F6F0E6;display:flex;flex-direction:column;gap:40px">
 <div class="fcols">
 <div style="display:flex;flex-direction:column;gap:10px">
 <div class="serif" style="font-size:30px;font-weight:700">kksenphoto</div>
@@ -279,7 +311,7 @@ footer a{color:#D9CCBD;text-decoration:none}footer a:hover{color:#FFFFFF}
 <div class="fgroups" style="font-size:16px">
 <div style="display:flex;flex-direction:column;gap:10px"><div style="font-weight:700">Контакты</div><a href="tel:+79855388999">+7 985 538 8999</a><a href="mailto:petyapoplevin@gmail.com">petyapoplevin@gmail.com</a></div>
 <div style="display:flex;flex-direction:column;gap:10px"><div style="font-weight:700">Студия</div><div style="color:#D9CCBD">Мичуринский проспект, д. 42</div><div style="color:#D9CCBD">с 10:00 до 18:00</div></div>
-<div style="display:flex;flex-direction:column;gap:10px"><div style="font-weight:700">Соцсети</div><div style="color:#D9CCBD">@petovik</div></div>
+<div style="display:flex;flex-direction:column;gap:10px"><div style="font-weight:700">Соцсети</div><a href="https://t.me/petovik" target="_blank" rel="noopener">Telegram: @petovik</a></div>
 </div>
 </div>
 <div class="frow" style="font-size:14px;color:#B8A895;border-top:1px solid #4A3F38;padding-top:24px">
@@ -288,9 +320,14 @@ footer a{color:#D9CCBD;text-decoration:none}footer a:hover{color:#FFFFFF}
 <button type="button" class="flink" data-open="terms">Пользовательское соглашение</button>
 <button type="button" class="flink" data-open="privacy">Согласие на обработку данных</button>
 </div>
-<div>Сделано Поплёвиным Петром Олеговичем — @petovik</div>
+<div>Сделано Поплёвиным Петром Олеговичем — <a class="soc" href="https://t.me/petovik" target="_blank" rel="noopener">@petovik</a></div>
 </div>
 </footer>
+
+<nav class="cbar" aria-label="Быстрая связь">
+<a class="cb cb-call" href="tel:+79855388999"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/></svg>Позвонить</a>
+<a class="cb cb-write" href="https://t.me/petovik" target="_blank" rel="noopener"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4z"/></svg>Написать</a>
+</nav>
 
 <dialog id="dlg-terms" aria-labelledby="terms-title">
 <div class="mcard">
